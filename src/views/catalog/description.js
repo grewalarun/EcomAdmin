@@ -6,6 +6,7 @@ import { CButton } from "@coreui/react";
 const Description = (props) => {
   const [data, setData] = React.useState({ p_id: props.id, description: "No Decription" });
   const [desData, setDesData] = React.useState({desc:"",descData:"Initial Description"});
+  const [isLoading, setIsLoading] = React.useState({loading:true, message:"no message"});
   React.useEffect(() => {
     axios
     .get("http://localhost:3500/api/description/" + props.id)
@@ -15,9 +16,19 @@ const Description = (props) => {
         desc:response.data.response.length,
         descData:response.data.response[0].description
       });
+      if(response.data.message=="Data Fetched"){
+      setIsLoading({
+          loading:false,
+          message: response.data.message
+      })
+   }
     })
     .catch(function (error) {
       //Perform action based on error
+      setIsLoading({
+        loading:false,
+        
+    })
     })
   },[])
 
@@ -53,24 +64,28 @@ const Description = (props) => {
         })
     }
   };
-  
  
+  var outputexiting  = () => {
+      return(
+     <>
+        <h3>Edit Description</h3>
+        <form onSubmit={submitDescription}>
+          <CKEditor
+            onChange={({ editor }) =>
+              setData({ p_id: props.id, description: editor.getData() })
+            }
+            data={desData.descData}
+          />
+          <CButton type="submmit" color="primary">
+            Update Description
+          </CButton>
+        </form>
+      </>
+      )
+        }
+      
   return (
-    <>
-    
-  <h3>Edit Description</h3>
-      <form onSubmit={submitDescription}>
-        <CKEditor
-          onChange={({ editor }) =>
-            setData({ p_id: props.id, description: editor.getData() })
-          }
-          data={desData.descData}
-        />
-        <CButton type="submmit" color="primary">
-          Update Description
-        </CButton>
-      </form>
-    </>
+    isLoading.loading==false?outputexiting():"Loading"
   );
 };
 
