@@ -56,7 +56,7 @@ const Addproduct = () => {
       ...formData,
 
       // Trimming any whitespace
-      [e.target.name]: e.target.value.trim(),
+      [e.target.name]: e.target.value,
       
     });
    
